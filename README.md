@@ -30,3 +30,5 @@ docker run -d --cap-add=NET_ADMIN --cap-add=SYS_ADMIN -v $(pwd)/shared:/root/sha
 
 The default password is `coreemu`.
 
+
+![DEMO](./docs/demo.gif)

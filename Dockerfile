@@ -30,6 +30,9 @@ RUN echo "deb http://eriberto.pro.br/core/ stretch main\ndeb-src http://eriberto
         supervisor && \
         rm -rf /var/lib/apt/*
 
+
+RUN cd /root/noVNC && ln -sf vnc.html index.html
+
 # Really necessary if root?
 RUN setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
 ADD bg/ /root/
@@ -37,14 +40,12 @@ ADD ./config/ /root/.config/
 ADD etc/supervisor/conf.d /etc/supervisor/conf.d
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
+ADD extra /extra
 VOLUME /root/shared
 # noVNC
-EXPOSE 6080
+EXPOSE 8080
 # VNC
 EXPOSE 5900
 
-#ADD https://github.com/krallin/tini/releases/download/v0.14.0/tini-amd64 /bin/tini
-#RUN chmod +x /bin/tini
 
 ENTRYPOINT "/entrypoint.sh"

@@ -42,7 +42,6 @@ run_local: build
 		-P \
 		--cap-add SYS_ADMIN \
 		--cap-add NET_ADMIN \
-		-v $(HOME):/root/$(USER) \
 		$(IMAGE_NAME)
 
 shell:

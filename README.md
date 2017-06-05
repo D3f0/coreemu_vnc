@@ -32,7 +32,7 @@ The default password is `coreemu`.
 
 # Running in Kitematic
 
-Search the d3f0/coreemu_vnc image and run it in privileged mode, then point a browser to the port Docker expose the container's 6080 port.
+Search the d3f0/coreemu_vnc image and run it in privileged mode, then point a browser to the port Docker expose the container's 8080 port.
 
 ![DEMO](./docs/demo.gif)
 

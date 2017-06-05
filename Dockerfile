@@ -27,7 +27,7 @@ RUN echo "deb http://eriberto.pro.br/core/ stretch main\ndeb-src http://eriberto
         net-tools rox-filer \
         quagga xorp bird openssh-client openssh-server isc-dhcp-server vsftpd apache2 tcpdump \
         radvd at ucarp openvpn ipsec-tools racoon traceroute mgen tshark \
-        supervisor && \
+        python-twisted supervisor && \
         rm -rf /var/lib/apt/*
 
 

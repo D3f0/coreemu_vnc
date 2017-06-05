@@ -37,13 +37,11 @@ help:	## Imprime ayuda
 build:
 	docker build -t $(IMAGE_NAME) .
 
-run: build
-	docker rm $(IMAGE_NAME) || true
+run_local: build
 	docker run \
 		-P \
 		--cap-add SYS_ADMIN \
 		--cap-add NET_ADMIN \
-		--name $(IMAGE_NAME) \
 		-v $(HOME):/root/$(USER) \
 		$(IMAGE_NAME)
 

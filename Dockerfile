@@ -40,7 +40,7 @@ RUN chmod +x /entrypoint.sh
 
 VOLUME /root/shared
 # noVNC
-EXPOSE 80
+EXPOSE 6080
 # VNC
 EXPOSE 5900
 

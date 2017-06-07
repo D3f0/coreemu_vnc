@@ -1,0 +1,6 @@
+export DISPLAY
+DISPLAY=:1 USER=root exec openbox --debug &
+sleep 2
+DISPLAY=:1 feh --bg-scale /root/.config/dit.jpg 
+DISPLAY=:1 USER=root tint2 &
+DISPLAY=:1 USER=root core-gui &

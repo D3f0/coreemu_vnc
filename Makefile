@@ -16,6 +16,14 @@ webbrowser.open(path)
 endef
 export BROWSER_PYSCRIPT
 
+define PORT_INFO
+form subprocess import check_output
+
+output = check_output('')
+
+endef
+export PORT_INFO
+
 define PRINT_HELP_PYSCRIPT
 import re, sys
 
@@ -34,23 +42,69 @@ help:	## Imprime ayuda
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 
-build:
+build:  ## Build image
+	@docker ps --format '{{.Image}}' | grep $(IMAGE_NAME) && \
+		docker kill /$(IMAGE_NAME) && docker rm -f $(IMAGE_NAME) || true
 	docker build -t $(IMAGE_NAME) .
 
-run_local: build
+run_local:  ## Runs locally
+	docker ps --format '{{.Image}}' | grep $(IMAGE_NAME) && \
+		echo "Ya en funcioanmiento!" || \
 	docker run \
 		-P \
 		--cap-add SYS_ADMIN \
 		--cap-add NET_ADMIN \
+		--name $(IMAGE_NAME) \
+		-d \
 		$(IMAGE_NAME)
+	$(MAKE) logs
 
-shell:
-	@docker-compose exec vnc bash
+run_dev:
+	docker ps --format '{{.Image}}' | grep $(IMAGE_NAME) && \
+		echo "Ya en funcioanmiento!" || \
+	docker run \
+		-P \
+		--cap-add SYS_ADMIN \
+		--cap-add NET_ADMIN \
+		--name $(IMAGE_NAME) \
+		-d \
+		-p 8080:8080 -p 6080:6080 -p 2121:21\
+		-v $$(pwd)/extra:/extra \
+		$(IMAGE_NAME)
+	$(MAKE) logs
+
+logs:
+	docker logs -f $(IMAGE_NAME)
+
+vnclogs:
+	@-docker exec -ti $(IMAGE_NAME) cat /root/.vnc/*.log
+shell:   ## Lauches a shell inside the container
+	@-docker exec -ti $(IMAGE_NAME) bash
+
+supervisorctl:   ## Lauches a shell inside the container
+	@docker exec -ti $(IMAGE_NAME) supervisorctl
 
 stop:
-	@docker stop $(IMAGE_NAME)
-	@docker rm $(IMAGE_NAME)
+	@echo "Detener la máquina virtual puede tomar hasta 10s"
+	@-docker stop $(IMAGE_NAME) && docker rm $(IMAGE_NAME)
 
-kill:
-	@-docker kill $(IMAGE_NAME)
-	@docker rm $(IMAGE_NAME)
+status:		## Muestra el estado de los servicios
+	@-docker ps --format '{{.Image}}' 2>/dev/null --filter name=$(IMAGE_NAME) \
+		2>/dev/null 1>/dev/null || exit 1
+	@docker exec -ti $(IMAGE_NAME) supervisorctl status
+
+kill:  ## Kills container
+	@docker ps --format '{{.Image}}' | grep $(IMAGE_NAME) && \
+		docker kill /$(IMAGE_NAME) || \
+		echo "No en ejecucion"
+
+# rm: kill
+# 	@-docker rm /$(IMAGE_NAME) 2>/dev/null || echo "No existe"
+
+ps:		## Muestra contenedores en ejecucion
+	docker ps
+
+re: stop build run_local
+
+ports:
+	@docker ps --filter name=$(IMAGE_NAME) --format '{{.Ports}}'

@@ -30,22 +30,29 @@ RUN echo "deb http://eriberto.pro.br/core/ stretch main\ndeb-src http://eriberto
         python-twisted supervisor && \
         rm -rf /var/lib/apt/*
 
-
 RUN cd /root/noVNC && ln -sf vnc.html index.html
 
 # Really necessary if root?
 RUN setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
-ADD bg/ /root/
+RUN apt-get update \
+    && apt-get install -q -y dpkg-dev python-dev && \
+    easy_install pip && pip install browsepy && \
+    apt-get remove -q -y dpkg-dev python-dev
+RUN apt-get update && apt-get install -q -y tightvncserver netcat && \
+    rm -rf /var/lib/apt/cache
+# RUN apt-get update \
+#     && apt-get install -q -y nginx
+
+ADD extra/ /extra
+ADD  vnc /root/.vnc/
+RUN chmod +x /root/.vnc/xstartup
 ADD ./config/ /root/.config/
 ADD etc/supervisor/conf.d /etc/supervisor/conf.d
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-ADD extra /extra
+ENV USER root
 VOLUME /root/shared
-# noVNC
-EXPOSE 8080
-# VNC
-EXPOSE 5900
 
+EXPOSE 6080 8080 5900 80 22 21
 
 ENTRYPOINT "/entrypoint.sh"

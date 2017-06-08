@@ -47,31 +47,20 @@ build:  ## Build image
 		docker kill /$(IMAGE_NAME) && docker rm -f $(IMAGE_NAME) || true
 	docker build -t $(IMAGE_NAME) .
 
-run_local:  ## Runs locally
-	docker ps --format '{{.Image}}' | grep $(IMAGE_NAME) && \
-		echo "Ya en funcioanmiento!" || \
-	docker run \
-		-P \
-		--cap-add SYS_ADMIN \
-		--cap-add NET_ADMIN \
-		--name $(IMAGE_NAME) \
-		-d \
-		$(IMAGE_NAME)
-	$(MAKE) logs
+run_local: run_dev ## Runs locally
 
 run_dev:
 	docker ps --format '{{.Image}}' | grep $(IMAGE_NAME) && \
 		echo "Ya en funcioanmiento!" || \
 	docker run \
-		-P \
 		--cap-add SYS_ADMIN \
 		--cap-add NET_ADMIN \
 		--name $(IMAGE_NAME) \
 		-d \
-		-p 8080:8080 -p 6080:6080 -p 2121:21\
+		-p 8080:8080 -p 6080:6080 -p 2121:2121 -p 2222:2222 -p 80:80 -p 9091:9091\
 		-v $$(pwd)/extra:/extra \
 		$(IMAGE_NAME)
-	$(MAKE) logs
+	@$(MAKE) logs
 
 logs:
 	docker logs -f $(IMAGE_NAME)
@@ -106,5 +95,10 @@ ps:		## Muestra contenedores en ejecucion
 
 re: stop build run_local
 
+killre: kill build run_local
+
 ports:
 	@docker ps --filter name=$(IMAGE_NAME) --format '{{.Ports}}'
+
+nginxlogs:
+	@docker exec -ti $(IMAGE_NAME) bash -c "tail -fn0 /var/log/nginx/*.log"

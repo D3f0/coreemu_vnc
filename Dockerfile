@@ -40,19 +40,22 @@ RUN apt-get update \
     apt-get remove -q -y dpkg-dev python-dev
 RUN apt-get update && apt-get install -q -y tightvncserver netcat && \
     rm -rf /var/lib/apt/cache
-# RUN apt-get update \
-#     && apt-get install -q -y nginx
+
+RUN apt-get update \
+    && apt-get install -q -y nginx
 
 ADD extra/ /extra
 ADD  vnc /root/.vnc/
 RUN chmod +x /root/.vnc/xstartup
 ADD ./config/ /root/.config/
 ADD etc/supervisor/conf.d /etc/supervisor/conf.d
+ADD etc/nginx/sites-enabled /etc/nginx/sites-enabled
+ADD var/www/html /var/www/html
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENV USER root
 VOLUME /root/shared
 
-EXPOSE 6080 8080 5900 80 22 21
+EXPOSE 6080 8080 5900 2121 2222 80
 
 ENTRYPOINT "/entrypoint.sh"

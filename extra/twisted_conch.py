@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
-from zope.interface import implements
 
+import sys
+import posixpath
+from zope.interface import implements
 from twisted.application import service, internet
 from twisted.conch.ssh.keys import Key
 from twisted.conch.ssh.factory import SSHFactory
@@ -8,8 +10,11 @@ from twisted.conch.unix import UnixSSHRealm
 from twisted.cred.checkers import ICredentialsChecker
 from twisted.cred.credentials import IUsernamePassword
 from twisted.cred.portal import Portal
-import posixpath
+from twisted.python import log
 
+
+
+log.startLogging(sys.stderr)
 def get_key(path):
     path = posixpath.expanduser(path)
     return Key.fromString(data=open(path).read())
@@ -24,6 +29,7 @@ class DummyChecker(object):
 
 
 def makeService():
+    log.msg("Starting SSH server")
     public_key = get_key('~/.ssh/id_rsa.pub')
     private_key = get_key('~/.ssh/id_rsa')
 
@@ -33,7 +39,7 @@ def makeService():
     factory.portal = Portal(UnixSSHRealm())
     factory.portal.registerChecker(DummyChecker())
 
-    return internet.TCPServer(22, factory)
+    return internet.TCPServer(2222, factory)
 
 
 application = service.Application("sftp server")

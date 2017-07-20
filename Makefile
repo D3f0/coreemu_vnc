@@ -59,6 +59,7 @@ run_dev:
 		-d \
 		-p 8080:8080 -p 6080:6080 -p 2121:2121 -p 2222:2222 -p 80:80 -p 9091:9091\
 		-v $$(pwd)/extra:/extra \
+		-v $$(pwd)/var/www/html:/var/www/html \
 		$(IMAGE_NAME)
 	@$(MAKE) logs
 

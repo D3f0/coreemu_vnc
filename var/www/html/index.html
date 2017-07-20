@@ -28,7 +28,7 @@
               <img alt=""
                    src="images/logo.svg" />
             </span>
-                    <span class="title">Phantom</span>
+                    <span class="title">Redes y Transmisión de Datos</span>
                 </a>
                 <!-- Nav -->
                 <nav>
@@ -60,14 +60,20 @@
             <div class="inner">
                 <header>
                     <h1>Redes y Transmisión de Datos</h1>
-                    <p>Entorno CORE pre-configurado</p>.</header>
+                    <p>Entorno CORE pre-configurado</p>.
+                    <p>Recordar que la ejecución debe hacerse con
+                        <pre>
+                        --cap-add NET_ADMIN --cap-add SYS_ADMIN
+                        
+</pre></p>
+                </header>
                 <section class="tiles">
                     <article class="style1">
                         <span class="image">
                 <img alt=""
                      src="images/pic01.jpg" />
               </span>
-                        <a href="/vncws/vnc.html">
+                        <a href="/vncws/vnc.html?password=coreemu&autoconnect=true">
                             <h2>CORE</h2>
                             <div class="content">
                                 <p>Utilizar la clave coreemu para interactuar.</p>
@@ -79,7 +85,7 @@
                 <img alt=""
                      src="images/pic02.jpg" />
               </span>
-                        <a href="generic.html">
+                        <a href="/browsepy">
                             <h2>Administrador de Archivos</h2>
                             <div class="content">
                                 <p>Administrador de archivos web.</p>
@@ -98,6 +104,30 @@
                             </div>
                         </a>
                     </article>
+                    <article class="style4">
+                        <span class="image">
+                <img alt=""
+                     src="images/pic04.jpg" />
+              </span>
+                        <a id="vnc">
+                            <h2>VNC</h2>
+                            <div class="content">
+                                <p>VNC Nativo</p>
+                            </div>
+                        </a>
+                    </article>
+                    <article class="style5">
+                        <span class="image">
+                <img alt=""
+                     src="images/pic05.jpg" />
+              </span>
+                        <a href="/butterfly" id="butterfly">
+                            <h2>Terminal Web</h2>
+                            <div class="content">
+                                <p>Terminal web baada en Butterfly</p>
+                            </div>
+                        </a>
+                    </article>
                 </section>
             </div>
         </div>
@@ -110,6 +140,12 @@
     <script src="assets/js/util.js"></script>
     <!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
     <script src="assets/js/main.js"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            var vnc = document.getElementById("vnc");
+            vnc.href = 'vnc://' + window.location.host + ':5901';
+        }
+    </script>
 </body>
 
 </html>

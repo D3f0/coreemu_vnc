@@ -19,6 +19,10 @@
   <item label="Administrador de Archivos">
     <action name="Execute"><execute>rox-filer</execute></action>
   </item>
+
+  <item label="Matar procesos X">
+    <action name="Execute"><execute>xkill</execute></action>
+  </item>
   <!-- This requires the presence of the 'menu' package to work -->
   <menu id="/Debian" />
   <separator />

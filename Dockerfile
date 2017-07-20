@@ -8,10 +8,10 @@ ENV DEBIAN_FRONTEND noninteractive
 
 
 RUN apt-get update -qq && \
-    apt-get install -y openbox obconf git x11vnc xvfb  wget python unzip \
+    apt-get install -y  lxde-core lxtask git x11vnc xvfb wget curl python unzip \
         bridge-utils ebtables iproute2 iproute2 iproute libev4 quagga \
         libtk-img tk8.5 dirmngr net-tools tcpdump \
-        feh tint2 python-numpy && \
+        python-numpy && \
         rm -rf /var/lib/apt/*
 
 RUN mkdir -p ~/.vnc
@@ -37,12 +37,24 @@ RUN setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
 RUN apt-get update \
     && apt-get install -q -y dpkg-dev python-dev && \
     easy_install pip && pip install browsepy && \
+    pip install "butterfly<3" && \
     apt-get remove -q -y dpkg-dev python-dev
 RUN apt-get update && apt-get install -q -y tightvncserver netcat && \
     rm -rf /var/lib/apt/cache
 
 RUN apt-get update \
-    && apt-get install -q -y nginx
+    && apt-get install -q -y nginx openssh-server
+
+RUN mkdir /var/run/sshd
+RUN echo 'root:coreemu' | chpasswd
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# SSH login fix. Otherwise user is kicked off after login
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+
+ENV NOTVISIBLE "in users profile"
+RUN echo "export VISIBLE=now" >> /etc/profile
+
 
 ADD extra/ /extra
 ADD  vnc /root/.vnc/
@@ -56,6 +68,6 @@ RUN chmod +x /entrypoint.sh
 ENV USER root
 VOLUME /root/shared
 
-EXPOSE 6080 8080 5900 2121 2222 80
+EXPOSE 8080 80 22
 
 ENTRYPOINT "/entrypoint.sh"

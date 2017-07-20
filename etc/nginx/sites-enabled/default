@@ -10,15 +10,41 @@ upstream browsepy {
     server 127.0.0.1:8080;
 }
 
+upstream flaskapp {
+    server 127.0.0.1:3000;
+}
+
 server {
 	listen 80 default_server;
 	root /var/www/html;
 	index index.html index.htm index.nginx-debian.html;
 	server_name _;
-	location / {
-		try_files $uri $uri/ =404;
-	}
 
+    location /butterfly {
+
+        rewrite ^/butterfly/?(.*) /$1 break;
+        proxy_pass http://127.0.0.1:57575;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header Origin "$scheme://$host";
+
+        proxy_connect_timeout 7d;                                                                                                              
+        proxy_send_timeout 7d;                                                                                                                 
+        proxy_read_timeout 7d;
+
+        sub_filter_once off;
+
+        sub_filter_types text/css text/xml application/javascript;
+        sub_filter /style.css '/butterfly/style.css';
+        sub_filter /static '/butterfly/static';
+        sub_filter /ws '/butterfly/ws';
+        sub_filter /themes '/butterfly/themes';
+        sub_filter location.pathname '"/"';
+    }
+
+    rewrite ^/theme/?(.*)/butterfly/?(.*) /butterfly/theme/$1/$2 permanent;
 
     location /supervisor {
         return 302 $uri/index.html;
@@ -73,5 +99,9 @@ server {
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
           proxy_set_header Connection "upgrade";
+    }
+
+    location / {
+        proxy_pass http://flaskapp/;
     }
 }

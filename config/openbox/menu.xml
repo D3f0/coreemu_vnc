@@ -16,7 +16,7 @@
     <action name="Execute"><execute>core-gui</execute></action>
   </item>
 
-  <item label="Administrador de Archivos">
+      <item label="File Manager">
     <action name="Execute"><execute>rox-filer</execute></action>
   </item>
 

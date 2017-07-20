@@ -15,9 +15,21 @@ check_call('nc -v -z localhost 5901 ||'
 
 def exit(*args):
     check_call("tightvncserver -kill :1 || true ", shell=True)
+
+try:
+    with open('/root/.vnc/geometry') as fp:
+        geometry = fp.read()
+except Exception:
+    geometry = '1024x768'
+print(geometry)
+
 atexit.register(exit)
 
-output = check_call('tightvncserver :1 {}'.format(DISPLAY).split())
+output = check_call(
+    'tightvncserver {} -geometry {}'.format(
+        DISPLAY, geometry
+    ).split()
+)
 
 print(output, file=sys.stderr)
 

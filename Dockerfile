@@ -1,4 +1,4 @@
-FROM ubuntu:17.04
+FROM ubuntu:17.10
 
 ENV SCREEN_WIDTH 1280
 ENV SCREEN_HEIGHT 800
@@ -8,10 +8,10 @@ ENV DEBIAN_FRONTEND noninteractive
 
 
 RUN apt-get update -qq && \
-    apt-get install -y openbox obconf git x11vnc xvfb  wget python unzip \
+    apt-get install --no-install-recommends -y openbox obconf git x11vnc xvfb  wget python unzip \
         bridge-utils ebtables iproute2 iproute2 iproute libev4 libreadline6 \
-        libtk-img tk8.5 dirmngr net-tools tcpdump \
-        feh tint2 python-numpy logrotate && \
+        libtk-img tk8.5 dirmngr net-tools tcpdump xterm\
+        feh tint2 python-numpy logrotate ca-certificates && \
         rm -rf /var/lib/apt/*
 
 

@@ -3,7 +3,7 @@
 This image is an inspirated on the work of [Stuart Mardsen](https://github.com/stuartmarsden/dockerCoreEmu) CORE EMU image and his recommendations on [Eriberto packages](http://eriberto.pro.br/core/
 ).
 
-It's based, currently, on Ubuntu 17.04. You can get the udpated build at [Docker Hub](https://hub.docker.com/r/d3f0/coreemu_vnc/)
+It's based, currently, on Ubuntu 17.10. You can get the udpated build at [Docker Hub](https://hub.docker.com/r/d3f0/coreemu_vnc/)
 
 This image serves VNC and noVNC (this requires a modern web browser to be used).
 

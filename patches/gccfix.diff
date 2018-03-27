@@ -1,0 +1,36 @@
+diff --git a/src/libemane/controlportsession.cc b/src/libemane/controlportsession.cc
+index 6389b08..c3de1fc 100644
+--- a/src/libemane/controlportsession.cc
++++ b/src/libemane/controlportsession.cc
+@@ -36,6 +36,7 @@
+ 
+ #include <sys/socket.h>
+ #include <arpa/inet.h>
++#include <sys/uio.h>
+ 
+ EMANE::ControlPort::Session::Session():
+   u32MessageSizeBytes_{},
+diff --git a/src/libemane/spectrummonitor.cc b/src/libemane/spectrummonitor.cc
+index 861132f..f51264f 100644
+--- a/src/libemane/spectrummonitor.cc
++++ b/src/libemane/spectrummonitor.cc
+@@ -37,6 +37,7 @@
+ #include "emane/utils/conversionutils.h"
+ 
+ #include <algorithm>
++#include <functional>
+ 
+ namespace
+ {
+diff --git a/src/transports/virtual/tuntap.cc b/src/transports/virtual/tuntap.cc
+index 559c643..1e737f6 100644
+--- a/src/transports/virtual/tuntap.cc
++++ b/src/transports/virtual/tuntap.cc
+@@ -38,6 +38,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
++#include <sys/uio.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+ 

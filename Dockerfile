@@ -54,6 +54,24 @@ ADD ./config/ /root/.config/
 ADD etc/supervisor/conf.d /etc/supervisor/conf.d
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# Emane dependencies
+RUN apt-get update -qq && apt-get --no-install-recommends -y install gcc g++ autoconf automake libtool libxml2-dev libprotobuf-dev \
+python-protobuf libpcap-dev libpcre3-dev uuid-dev debhelper pkg-config build-essential \
+python-setuptools protobuf-compiler git dh-python python-lxml && \
+rm -rf /var/lib/apt/*
+
+# Need a patch to get EMANE to compile with GCC >7
+ADD patches/gccfix.diff /root/
+
+# Download EMANE v1.0.1 is the latest supprted
+RUN cd /root/ && wget https://github.com/adjacentlink/emane/archive/v1.0.1.tar.gz && tar -xvf v1.0.1.tar.gz && \
+cp gccfix.diff emane-1.0.1 && \ 
+cd emane-1.0.1 && patch -p1 <gccfix.diff && \
+./autogen.sh && ./configure && make deb WITHOUT_PYTHON3=1 && \
+cd .debbuild && \
+dpkg -i *.deb
+ 
 # ADD extra /extra
 VOLUME /root/shared
 # noVNC

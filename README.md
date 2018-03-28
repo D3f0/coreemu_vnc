@@ -43,3 +43,7 @@ Search the d3f0/coreemu_vnc image and run it in privileged mode, then point a br
 ![DEMO](./docs/demo.gif)
 
 ![DEMO](./docs/demo2.gif)
+
+# How to run this in [Play With Docker](https://labs.play-with-docker.com)
+
+[![](./docs/pwd.png)](https://www.youtube.com/watch?v=VuWV9cM-LVg)

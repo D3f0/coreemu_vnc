@@ -23,7 +23,8 @@ RUN cd /root/ && wget https://github.com/adjacentlink/emane/archive/v1.0.1.tar.g
 cp gccfix.diff emane-1.0.1 && \ 
 cd emane-1.0.1 && patch -p1 <gccfix.diff && \
 ./autogen.sh && ./configure && make deb WITHOUT_PYTHON3=1
-RUN rm -rf /root/emane-1.0.1/.debbuild/*.ddeb 
+RUN mkdir /emane_install_debs
+RUN find /root/emane-1.0.1/.debbuild/ -iname "*.deb" -exec cp {} /emane_install_debs \;
 
 FROM ubuntu:17.10
 
@@ -38,7 +39,9 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y openbox obconf git x11vnc xvfb  wget python unzip \
         bridge-utils ebtables iproute2 iproute2 iproute libev4 libreadline6 \
         libtk-img tk8.5 dirmngr net-tools tcpdump xterm\
-        feh tint2 python-numpy logrotate ca-certificates libprotobuf10 && \
+        feh tint2 python-numpy logrotate ca-certificates libprotobuf10 \
+        socat netcat \
+        graphicsmagick-imagemagick-compat && \
         rm -rf /var/lib/apt/*
 
 
@@ -74,14 +77,14 @@ RUN ln -s /usr/bin/wireshark-gtk /usr/bin/wireshark
 #     rm quagga-mr_0.99.21mr2.2_amd64.deb
 
 
-COPY --from=emane_stage /root/emane-1.0.1/.debbuild /root/emane
-RUN dpkg -i /root/emane/*.deb
+COPY --from=emane_stage /emane_install_debs/ /tmp/emane_install_debs
+RUN dpkg -i /tmp/emane_install_debs/*.deb && rm -rf /tmp/emane_install_debs
 
 RUN cd /root/noVNC && ln -sf vnc.html index.html
 
 # Really necessary if root?
 # RUN setcap 'CAP_NET_RAW+eip CAP_NET_ADMIN+eip' /usr/bin/dumpcap
-ADD bg/ /root/
+ADD bg/bg.jpg /root/.config/bg.jpg
 ADD ./config/ /root/.config/
 ADD etc/supervisor/conf.d /etc/supervisor/conf.d
 ADD entrypoint.sh /entrypoint.sh

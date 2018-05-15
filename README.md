@@ -34,7 +34,17 @@ docker run -d --cap-add=NET_ADMIN --cap-add=SYS_ADMIN -v $(pwd)/shared:/root/sha
 
 ## Password
 
-The default password is `coreemu`.
+The default password is `coreemu`, but it can be changed using `-e PASSWORD=1234`.
+
+## Jupyter
+
+This image also includes a Jupyter Notebook/Lab server (it's installed though pipenv and directly executed with `supervisor.conf`).
+
+To run this image with Jupyter, this is recommended:
+
+```
+docker run -d --name=coreemu_vnc --hostname=coreemu_vnc --cap-add=NET_ADMIN --cap-add=SYS_ADMIN -v $(pwd)/shared:/root/shared -p 5900:5900 -p 8080:8080 -p 9999:9999  d3f0/coreemu_vnc
+```
 
 # Running in Kitematic
 

@@ -27,30 +27,78 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
+# By default tag is the current branch
+TAG = $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "latest")
 
-IMAGE_NAME = coreemu_vnc
+ORG = d3f0
+IMAGE_NAME = $(ORG)/coreemu_vnc
+JUPYTER_PORT ?= 9999
+NOVNC_PORT ?= 8080
+VNC_PORT ?= 5901
+HOSTNAME ?= coreemu_vnc
+CONTAINER ?= $(HOSTNAME)
+
+OPEN 				:=
+ifeq ($(OS),Windows_NT)
+	$(error "Windows not supported")
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+		OPEN := "xdg-open"
+	endif
+	ifeq ($(UNAME_S),Darwin)
+		OPEN := "open"
+	endif
+endif
 
 help:	## Imprime ayuda
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-
 build:
-	docker build -t $(IMAGE_NAME) .
+	docker build -t $(IMAGE_NAME):$(TAG) .
+	docker tag $(IMAGE_NAME):$(TAG) $(ORG)/$(IMAGE_NAME)
 
-run_local: build
+build_run: build rm run
+
+run: ## Starts the container
 	docker run \
-		-P \
+		--publish $(JUPYTER_PORT):9999 \
+		--publish $(NOVNC_PORT):8080 \
+		--publish $(VNC_PORT):5900 \
 		--cap-add SYS_ADMIN \
 		--cap-add NET_ADMIN \
-		$(IMAGE_NAME)
+		--hostname=$(HOSTNAME) \
+		--name=$(CONTAINER) \
+		--volume $(shell pwd)/shared:/root/shared/ \
+		--detach \
+		$(IMAGE_NAME):$(TAG)
 
-shell:
-	@docker-compose exec vnc bash
+logs:   ## Show container log
+	@echo "Control-C to stop showing logs"
+	-docker logs -f $(CONTAINER)
 
-stop:
-	@docker stop $(IMAGE_NAME)
-	@docker rm $(IMAGE_NAME)
 
-kill:
-	@-docker kill $(IMAGE_NAME)
-	@docker rm $(IMAGE_NAME)
+shell:   ## Creates a shell inside container
+	@docker-compose exec -ti $(CONTAINER) $(SHELL)
+
+rm:
+	-docker stop $(CONTAINER)
+	-docker rm $(CONTAINER)
+
+rebuild_relaunch: build restart ## Rebuilds and restarts containero
+
+ps:
+	docker ps -f=name=$(CONTAINER) $(ARGS)
+
+running:
+	docker ps -f=name=$(CONTAINER) | grep coreemu_vnc || $(MAKE) run
+
+open_jupyter: running ## Opens system browser in jupyter 
+	$(OPEN) http://localhost:$(JUPYTER_PORT)
+
+open_core_novnc: running  ## Opens system browser in noVNC
+	$(OPEN) http://localhost:$(NOVNC_PORT)
+
+open_core_vnc: running  ## Opens system VNC client (needs external program)
+	$(OPEN) vnc://localhost:$(VNC_PORT)
+	

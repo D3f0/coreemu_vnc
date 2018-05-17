@@ -6,7 +6,7 @@ RUN pip install pipenv
 RUN mkdir /jupyter
 WORKDIR /jupyter
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install  jupyter
-RUN /jupyter/.venv/bin/pip install jupyterlab
+RUN /jupyter/.venv/bin/pip install jupyterlab notebook>=5.5.0
 
 FROM ubuntu:17.10 as emane_stage
 # Emane dependencies

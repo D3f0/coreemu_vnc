@@ -6,7 +6,7 @@ RUN pip install pipenv
 RUN mkdir /jupyter
 WORKDIR /jupyter
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install  jupyter
-RUN /jupyter/.venv/bin/pip install jupyterlab notebook>=5.5.0
+RUN /jupyter/.venv/bin/pip install jupyterlab notebook>=5.5.0 sh psutil
 
 FROM ubuntu:17.10 as emane_stage
 # Emane dependencies
@@ -40,7 +40,7 @@ RUN apt-get update -qq && \
         bridge-utils ebtables iproute2 iproute2 iproute libev4 libreadline6 \
         libtk-img tk8.5 dirmngr net-tools tcpdump xterm\
         feh tint2 python-numpy logrotate ca-certificates libprotobuf10 \
-        socat netcat \
+        socat netcat iptables \
         graphicsmagick-imagemagick-compat && \
         rm -rf /var/lib/apt/*
 

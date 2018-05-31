@@ -77,6 +77,11 @@ logs:   ## Show container log
 	@echo "Control-C to stop showing logs"
 	-docker logs -f $(CONTAINER)
 
+start:
+	docker start $(CONTAINER)
+	
+stop:
+	docker stop $(CONTAINER)
 
 shell:   ## Creates a shell inside container
 	@docker-compose exec -ti $(CONTAINER) $(SHELL)
@@ -93,8 +98,11 @@ ps:
 running:
 	docker ps -f=name=$(CONTAINER) | grep coreemu_vnc || $(MAKE) run
 
-open_jupyter: running ## Opens system browser in jupyter 
-	$(OPEN) http://localhost:$(JUPYTER_PORT)
+open_jupyterlab: running ## Opens system browser in jupyter 
+	$(OPEN) http://localhost:$(JUPYTER_PORT)/lab
+
+open_jupyter_notebook: running ## Opens system browser in jupyter 
+	$(OPEN) http://localhost:$(JUPYTER_PORT)/tree
 
 open_core_novnc: running  ## Opens system browser in noVNC
 	$(OPEN) http://localhost:$(NOVNC_PORT)

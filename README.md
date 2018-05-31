@@ -1,5 +1,7 @@
 # CORE Network Simulator
 
+[Español](./README.es.md)
+
 This image is an inspirated on the work of [Stuart Mardsen](https://github.com/stuartmarsden/dockerCoreEmu) CORE EMU image and his recommendations on [Eriberto packages](http://eriberto.pro.br/core/
 ).
 

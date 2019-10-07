@@ -14,14 +14,15 @@ RUN echo "deb http://old-releases.ubuntu.com/ubuntu/ zesty main restricted unive
     deb http://old-releases.ubuntu.com/ubuntu/ zesty-security main restricted universe multiverse" > /etc/apt/sources.list
 
 RUN apt-get upgrade  && \
-    apt-get dist-upgrade  
+    apt-get -f dist-upgrade
 
-RUN apt-get update && \
+RUN apt-get -y update && \
+    apt-get -y install iptables && \ 
     apt-get install nano vim netcat --no-install-recommends -y openbox obconf git x11vnc xvfb  wget python unzip \
         bridge-utils ebtables iproute2 iproute2 iproute libev4 libreadline6 \
         libtk-img tk8.5 dirmngr net-tools tcpdump xterm\
         feh tint2 python-numpy logrotate ca-certificates && \
-        rm -rf /var/lib/apt/*
+        rm -rf /var/lib/apt/* 
 
 
 # If we want the MDR MANET need to use the navy package

@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu:17.04
 
 ENV SCREEN_WIDTH 1280
 ENV SCREEN_HEIGHT 800
@@ -7,8 +7,17 @@ ENV PASSWORD coreemu
 ENV DEBIAN_FRONTEND noninteractive
 
 
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y openbox obconf git x11vnc xvfb  wget python unzip \
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.old
+
+RUN echo "deb http://old-releases.ubuntu.com/ubuntu/ zesty main restricted universe multiverse \n \
+    deb http://old-releases.ubuntu.com/ubuntu/ zesty-updates main restricted universe multiverse \n \
+    deb http://old-releases.ubuntu.com/ubuntu/ zesty-security main restricted universe multiverse" > /etc/apt/sources.list
+
+RUN apt-get upgrade  && \
+    apt-get dist-upgrade  
+
+RUN apt-get update && \
+    apt-get install nano vim netcat --no-install-recommends -y openbox obconf git x11vnc xvfb  wget python unzip \
         bridge-utils ebtables iproute2 iproute2 iproute libev4 libreadline6 \
         libtk-img tk8.5 dirmngr net-tools tcpdump xterm\
         feh tint2 python-numpy logrotate ca-certificates && \
@@ -32,6 +41,7 @@ RUN echo "deb http://eriberto.pro.br/core/ stretch main\ndeb-src http://eriberto
     apt-get -q update && apt-get -q -y install --no-install-recommends \
         core-network core-network-daemon && apt-get -q -y install tshark \
         net-tools rox-filer \
+        nano vim netcat \
         xorp bird openssh-client openssh-server isc-dhcp-server vsftpd apache2 tcpdump \
         radvd at ucarp openvpn ipsec-tools racoon traceroute mgen wireshark-gtk \
         supervisor && \
@@ -56,7 +66,7 @@ ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Emane dependencies
-RUN apt-get update -qq && apt-get --no-install-recommends -y install gcc g++ autoconf automake libtool libxml2-dev libprotobuf-dev \
+RUN apt-get update -qq && apt-get --no-install-recommends -y install gcc g++ autoconf nano vim netcat automake libtool libxml2-dev libprotobuf-dev \
 python-protobuf libpcap-dev libpcre3-dev uuid-dev debhelper pkg-config build-essential \
 python-setuptools protobuf-compiler git dh-python python-lxml && \
 rm -rf /var/lib/apt/*

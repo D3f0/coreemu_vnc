@@ -47,7 +47,7 @@ services:
       - NET_ADMIN
       - SYS_ADMIN
     volumes:
-      - /shared:/root/shared
+      - $PWD/shared:/root/shared
 ```
 Run docker-compose up -d in the same directory as the docker-compose.yml file to start the container.
 

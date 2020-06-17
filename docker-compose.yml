@@ -1,0 +1,14 @@
+version: '3'
+services:
+  coreemu:
+    image: d3f0/coreemu_vnc
+    containetr_name: coreemu
+    ports:
+      - "8080:8080"
+      - "5900:5900"
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    volumes:
+      - $PWD/shared:/root/shared
+    

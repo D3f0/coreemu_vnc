@@ -32,6 +32,26 @@ There's a volume declared as /root/shared, you can exchange files though that fo
 docker run -d --cap-add=NET_ADMIN --cap-add=SYS_ADMIN -v $(pwd)/shared:/root/shared -p 5900:5900 -p 8080:8080 d3f0/coreemu_vnc
 ```
 
+## Run with docker-compose
+The above can be converted to a docker-compose.yml file to use with [Docker Compose](https://docs.docker.com/compose/):
+
+```
+version: '3'
+services:
+  coreemu:
+    image: d3f0/coreemu_vnc
+    container_name: coreemu
+    ports:
+      - "8080:8080"
+      - "5900:5900"
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    volumes:
+      - $PWD/shared:/root/shared
+```
+Run docker-compose up -d in the same directory as the docker-compose.yml file to start the container.
+
 ## Password
 
 The default password is `coreemu`.

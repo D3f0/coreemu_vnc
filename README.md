@@ -31,6 +31,7 @@ There's a volume declared as /root/shared, you can exchange files though that fo
 ```
 docker run -d --cap-add=NET_ADMIN --cap-add=SYS_ADMIN -v $(pwd)/shared:/root/shared -p 5900:5900 -p 8080:8080 d3f0/coreemu_vnc
 ```
+
 ## Run with docker-compose
 The above can be converted to a docker-compose.yml file to use with [Docker Compose](https://docs.docker.com/compose/):
 

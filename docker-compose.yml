@@ -10,5 +10,5 @@ services:
       - NET_ADMIN
       - SYS_ADMIN
     volumes:
-      - $(PWD)/shared:/root/shared
+      - $PWD/shared:/root/shared
     
